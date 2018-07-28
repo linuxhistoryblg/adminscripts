@@ -1,0 +1,50 @@
+# ~/rpmbuild/SPECS/TARGET6-TARGET2.spec
+
+#REPLACEMENTS THAT WILL BE SOUGHT OUT BY THE makerpm SCRIPT
+#TARGET1=NAME
+#TARGET2=VERSION {INT.INT}
+#TARGET3=SUMMARY {STR}
+#TARGET4=SOURCE0 {<FILENAME>-<VER>.tar.gz}
+#TARGET5=INSTALL DIR
+#TARGET6=INSTALL FILENAME
+#TARGET7=DESCRIPTION {STR}
+
+Name: TARGET1
+Version: TARGET2                  
+Release: 1%{?dist}                
+Summary: TARGET3
+Group: Miscellaneous              
+License: NONE
+# URL:
+Source0: TARGET4     
+BuildArch: noarch    
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+# BuildRequires:     
+# Requires:          
+
+%description
+TARGET7
+
+%prep
+%setup -q
+
+%build
+# %configure         
+# make %{?_smp_mflags}
+
+%install
+rm -rf $RPM_BUILD_ROOT
+# make install DESTDIR=$RPM_BUILD_ROOT    
+install -d -m 0755 $RPM_BUILD_ROOTTARGET5                         
+install -m 0755 TARGET1 $RPM_BUILD_ROOTTARGET5/TARGET6
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+# %doc
+#/opt/TARGET5/TARGET6
+TARGET5/TARGET6            
+
+%changelog
