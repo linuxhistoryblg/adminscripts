@@ -6,7 +6,7 @@ from sys import exit
 from datetime import datetime
 
 def main():
-    #Get user's home Directory
+    #Get user's home Directory and append /Directory
     home = environ['HOME'] + '/Documents'
     #Set gpguser, most likely the owner of $home
     gpguser = environ['USER']
