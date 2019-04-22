@@ -1,0 +1,7 @@
+#!/bin/bash
+dialog --title "Please Wait" --infobox "Reloading Firewall" 10 20
+firewall-cmd --reload
+sleep .5
+dialog --title "Current Firewall Config" --msgbox "$(firewall-cmd --list-all)"  30 50
+clear
+exit 0
