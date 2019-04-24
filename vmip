@@ -1,0 +1,31 @@
+#!/bin/bash
+#get ip of qemu VM given as argument to this script
+
+#Check for VM Name as argument
+if [ ! ${1} ];then
+    echo "USAGE: vmip [VM NAME]"
+    exit 1
+else
+
+#Check to see if VM is present
+  virsh list | grep ${1} &>/dev/null
+  if [ $? -ne 0 ];then
+    echo "ERROR: failed to get domain '${1}'"
+    echo "Run 'virsh list' again and choose a running VM'"
+    exit 1
+  else
+
+#First get MAC of VM returned from running virsh list
+    MAC=$(virsh dumpxml "${1}" | grep "mac address" | awk -F \' '{ print $2 }') 
+  
+#Next check arp table for that MAC and get associated IP address
+    IP=$(arp -an | grep ${MAC})
+
+#Cleanup IP output
+    IP=$(echo $IP | awk -F ' ' '{print $2}')
+
+#Remove leading and trailing parenthesis and return
+    echo ${IP:1:-1}
+  fi
+fi
+exit 0
