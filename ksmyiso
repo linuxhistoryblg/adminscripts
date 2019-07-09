@@ -1,0 +1,41 @@
+#!/bin/bash
+
+workdir=/tmp/image
+
+if [ ! -d /tmp/image ];then
+    mkdir $workdir
+else
+  clear
+  echo "$workdir exists, remove this directory and rerun"
+  exit 1
+fi
+ISO=$(dialog --stdout --backtitle "ISO Image Mastering Tool" --title "Choose an ISO to modify" --fselect $HOME/ 10 68)
+
+# 1. Mount ISO image
+if [ ! -d /mnt/iso ];then
+  mkdir /mnt/iso
+fi
+if [ $? -ne 0 ];then
+  echo "Unable to create /mnt/iso"
+  exit 1
+fi
+mount -o loop ${ISO} /mnt/iso
+# 2. Extract ISO to working directory
+cp -pRf /mnt/iso ${workdir}
+# 3. Unmount ISO
+umount /mnt/iso
+# 4. Add Kickstart to iso/ directory
+KS=$(dialog --stdout --backtitle "ISO Image Mastering Tool" --title "Choose an ks.cfg to insert into ISO" --fselect $HOME/ 10 68)
+cp ${KS} ${workdir}/iso
+# 5. Edit isolinux/isolinux.cfg in iso/ directory. Add ‘ks=cdrom:/ks.cfg’ to the line that begins with ‘append’.
+sed -ie '/append/s/$/ ks=cdrom:\/ks.cfg/' ${workdir}/iso/isolinux/isolinux.cfg
+# 6. Use genisoimage in the iso/ directory to create a new bootable ISO
+cd ${workdir}/iso
+genisoimage -U -r -v -T -J -joliet-long -V “RHEL-7.5” -volset “RHEL-7.5” -A “RHEL-7.5” -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot -o ../NEWISO.iso .
+
+# 7. Implant md5 sum into new image:
+implantisomd5 ../NEWISO.iso
+
+dialog --stdout --backtitle "ISO Image Mastering Tool" --title "Task Complete!" --msgbox "\n\nModified ISO written to ${workdir}/NEWISO.iso" 10 30
+clear
+exit 0
