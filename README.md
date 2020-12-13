@@ -15,3 +15,6 @@ Usage: Use 'virsh list' to get list of running VMs and then run: vmip \[VM NAME]
 
 # ksmyiso
 Bash script with a dialog/ncurses interface which automates remastering a RHEL/CentOS installation ISO to include a kickstart file.
+
+# install_mongodb.sh
+Bash script for installing MongoDB on Fedora Release 33 from the mongodb.org/ 8Server repository. When MongoDB changed its licensing from GPL to SSPL Fedora made the decision to remove it from Fedora repositories.
